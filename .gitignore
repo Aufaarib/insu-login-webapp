@@ -25,3 +25,8 @@ dist-ssr
 
 # Local mock BE (npm run mock)
 mock
+
+# Env (keep .env.example)
+.env
+.env.*
+!.env.example
