@@ -1,0 +1,7 @@
+{
+  "rewrites": [
+    { "source": "/v1/:path*", "destination": "/api/mock" },
+    { "source": "/ciam/:path*", "destination": "/api/mock" },
+    { "source": "/auth", "destination": "/index.html" }
+  ]
+}
