@@ -27,7 +27,8 @@ const TELKOMSEL_PREFIXES =["811", "812", "813", "821", "822", "823", "851", "852
 // Number is typed after the +62 label, without the leading 0 (e.g. 81234567890)
 const validatePhone = (phone: string, type: "telkomsel" | "indihome") => {
   if (!phone) return "Nomor tidak boleh kosong";
-  if (type !== "telkomsel") return null;
+  // IndiHome numbers always start with 1 and are 12 digits long
+  if (type === "indihome") return /^1\d{11}$/.test(phone) ? null : "Nomor tidak valid";
   if (!/^8\d{10,11}$/.test(phone)) return "Nomor tidak valid";
   if (!TELKOMSEL_PREFIXES.includes(phone.slice(0, 3))) return "Nomor tidak terdaftar";
   return null;
