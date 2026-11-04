@@ -113,8 +113,8 @@ function App() {
       }
       setTargets(found);
       setSendError(false);
-      if (selected === "indihome") {
-        // IndiHome sends the code straight to the linked phone, no destination choice
+      if (selected === "telkomsel") {
+        // Telkomsel sends the code straight to the phone, no destination choice
         const dest = found.mobile.length ? "phone" : "email";
         if (!(await sendOtp(dest, found))) {
           setPhoneError(SEND_ERROR);

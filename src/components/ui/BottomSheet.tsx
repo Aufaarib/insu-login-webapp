@@ -43,12 +43,8 @@ const BottomSheet = ({ open, onClose, children }: BottomSheetProps) => {
 
   return (
     <>
-      <button
-        type="button"
-        aria-label="Tutup"
-        className="absolute inset-0 w-full bg-black/60 z-40 cursor-pointer"
-        onClick={onClose}
-      ></button>
+      {/* Clicks on the backdrop are ignored, so the sheet only closes from inside it */}
+      <div className="absolute inset-0 w-full bg-black/60 z-40"></div>
       <div
         ref={sheetRef}
         role="dialog"
