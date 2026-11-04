@@ -14,7 +14,9 @@ import {
   type OtpMethod,
 } from "./api/auth";
 
-const MAX_RESEND = 3;
+const MAX_WRONG_OTP = 3;
+const WRONG_OTP_WINDOW_MS = 60_000;
+const RESEND_COUNTDOWN = 300;
 const SEND_ERROR = "Gagal mengirim kode. Silakan coba lagi.";
 
 type Destination = "phone" | "email";
@@ -46,14 +48,15 @@ function App() {
   const [phoneError, setPhoneError] = useState<string | null>(null);
   const [otp, setOtpState] = useState(["", "", "", ""]);
   const [otpError, setOtpError] = useState(false);
-  const [resendCount, setResendCount] = useState(0);
-  const [countdown, setCountdown] = useState(86);
+  // Times of wrong codes within the last minute
+  const [wrongTimes, setWrongTimes] = useState<number[]>([]);
+  const [countdown, setCountdown] = useState(RESEND_COUNTDOWN);
   const [checking, setChecking] = useState(false);
   const [sending, setSending] = useState(false);
   const [sendError, setSendError] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
-  const resendLimitReached = resendCount >= MAX_RESEND;
+  const wrongLimitReached = wrongTimes.length >= MAX_WRONG_OTP;
 
   const setOtp = (value: string[]) => {
     setOtpState(value);
@@ -62,8 +65,8 @@ function App() {
 
   const startVerify = () => {
     setOtp(["", "", "", ""]);
-    setCountdown(86);
-    setResendCount(0);
+    setCountdown(RESEND_COUNTDOWN);
+    setWrongTimes([]);
     setStep("verify");
     setTimeout(() => inputRefs.current[0]?.focus(), 50);
   };
@@ -81,6 +84,16 @@ function App() {
     }, 1000);
     return () => clearInterval(timer);
   }, [step, countdown]);
+
+  // Unlock once the first of the wrong tries is a minute old
+  useEffect(() => {
+    if (!wrongLimitReached) return;
+    const timer = setTimeout(() => {
+      setWrongTimes([]);
+      setOtp(["", "", "", ""]);
+    }, wrongTimes[0] + WRONG_OTP_WINDOW_MS - Date.now());
+    return () => clearTimeout(timer);
+  }, [wrongLimitReached, wrongTimes]);
 
   const targetFor = (dest: Destination | null, found = targets) =>
     dest === "phone" ? found?.mobile[0] : dest === "email" ? found?.email[0] : undefined;
@@ -186,7 +199,7 @@ function App() {
   };
 
   const handleVerify = async () => {
-    if (otp.some((d) => d === "") || !destination) return;
+    if (otp.some((d) => d === "") || !destination || wrongLimitReached) return;
     setVerifying(true);
     try {
       await submitOtp(methodFor(selected, destination), otpData, otp.join(""));
@@ -194,12 +207,14 @@ function App() {
       goToAuthorization();
     } catch {
       setOtpError(true);
+      const now = Date.now();
+      setWrongTimes((times) => [...times.filter((t) => now - t < WRONG_OTP_WINDOW_MS), now]);
       setVerifying(false);
     }
   };
 
   const handleResend = async () => {
-    if (countdown > 0 || resendLimitReached || !destination) return;
+    if (countdown > 0 || !destination) return;
     setSending(true);
     setSendError(false);
     try {
@@ -207,9 +222,8 @@ function App() {
         setSendError(true);
         return;
       }
-      setResendCount((c) => c + 1);
       setOtp(["", "", "", ""]);
-      setCountdown(86);
+      setCountdown(RESEND_COUNTDOWN);
       setTimeout(() => inputRefs.current[0]?.focus(), 50);
     } finally {
       setSending(false);
@@ -388,8 +402,13 @@ function App() {
                   onPaste={handleOtpPaste}
                   inputRefs={inputRefs}
                   error={otpError}
+                  disabled={wrongLimitReached}
                 />
-                {otpError && (
+                {wrongLimitReached ? (
+                  <p role="alert" className="text-primary text-[11px] leading-[16px] px-[8px] -mt-[4px] text-center">
+                    Batas percobaan tercapai. Silakan tunggu beberapa saat sebelum mencoba kembali.
+                  </p>
+                ) : otpError && (
                   <p role="alert" className="text-primary text-[11px] -mt-[4px]">
                     Kode yang dimasukkan salah
                   </p>
@@ -403,7 +422,7 @@ function App() {
                   ) : (
                     <button
                       onClick={handleResend}
-                      disabled={sending || resendLimitReached}
+                      disabled={sending}
                       className="text-primary font-[600] disabled:text-subtle disabled:cursor-default"
                     >
                       {sending ? "Mengirim..." : "Kirim Ulang"}
@@ -415,15 +434,10 @@ function App() {
                     {SEND_ERROR}
                   </p>
                 )}
-                {resendLimitReached && countdown === 0 && (
-                  <p role="alert" className="text-primary text-[11px] leading-[16px] px-[8px]">
-                    Batas kirim ulang tercapai. Silakan tunggu beberapa saat sebelum mencoba kembali.
-                  </p>
-                )}
               </div>
               <button
                 onClick={handleVerify}
-                disabled={otp.some((d) => d === "") || verifying}
+                disabled={otp.some((d) => d === "") || verifying || wrongLimitReached}
                 className="btn btn-primary h-[48px] text-[16px] font-[600] disabled:opacity-100 disabled:bg-line disabled:text-subtle"
               >
                 {verifying ? "Memverifikasi..." : "Verifikasi"}

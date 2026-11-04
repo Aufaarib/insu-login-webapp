@@ -66,6 +66,7 @@ interface OtpInputGroupProps {
   onPaste?: (e: React.ClipboardEvent<HTMLInputElement>) => void
   inputRefs: React.MutableRefObject<Array<HTMLInputElement | null>>
   error?: boolean
+  disabled?: boolean
 }
 
 export const OtpInputGroup = ({
@@ -75,6 +76,7 @@ export const OtpInputGroup = ({
   onPaste,
   inputRefs,
   error = false,
+  disabled = false,
 }: OtpInputGroupProps) => (
   <div className="flex flex-row justify-center gap-[8px]">
     {value.map((digit, idx) => (
@@ -90,11 +92,12 @@ export const OtpInputGroup = ({
         aria-label={`Digit ${idx + 1}`}
         aria-invalid={error}
         value={digit}
+        disabled={disabled}
         onChange={(e) => onChange(idx, e.target.value)}
         onKeyDown={(e) => onKeyDown(idx, e)}
         onFocus={(e) => e.target.select()}
         onPaste={onPaste}
-        className={`w-[40px] h-[40px] rounded-[8px] border-[1.5px] bg-white text-center text-[16px] font-[400] text-ink caret-primary outline-none transition-colors focus:border-primary ${
+        className={`w-[40px] h-[40px] rounded-[8px] border-[1.5px] bg-white text-center text-[16px] font-[400] text-ink caret-primary outline-none transition-colors focus:border-primary disabled:bg-line/40 ${
           error ? 'border-primary' : digit ? 'border-subtle' : 'border-line'
         }`}
       />
