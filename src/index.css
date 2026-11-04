@@ -1,0 +1,150 @@
+@import "tailwindcss";
+
+/* Same breakpoint as insurtech-webapp: md = phone frame width */
+@theme {
+  --breakpoint-md: 412px;
+
+  --font-poppins: "Poppins", sans-serif;
+  --font-tsel: "Telkomsel Batik Sans", sans-serif;
+
+  --color-primary: #ed0226;
+  --color-primary-dark: #b90024;
+  --color-primary-bright: #ff0025;
+  --color-primary-soft: rgba(237, 2, 38, 0.1);
+
+  --color-ink: #181c21;
+  --color-navy: #001a41;
+  --color-body: #353941;
+  --color-muted: #757f90;
+  --color-subtle: #9ca9b9;
+
+  --color-page: #eff1f4;
+  --color-line: #dae0e9;
+  --color-skeleton: #ccd1d959;
+
+  --color-link: #0050ae;
+  --color-info-soft: #e9f6ff;
+  --color-success: #008e53;
+  --color-success-soft: #edfcf0;
+  --color-warning: #fda22b;
+  --color-warning-soft: #fef3d4;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("/fonts/Poppins-Regular.woff2");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("/fonts/Poppins-SemiBold.woff2");
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("/fonts/Poppins-Bold.woff2");
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "Telkomsel Batik Sans";
+  src: url("/fonts/TelkomselBatikSans-Regular.woff2");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "Telkomsel Batik Sans";
+  src: url("/fonts/TelkomselBatikSans-Bold.woff2");
+  font-weight: 700;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  color: #181c21;
+  font-family: "Poppins";
+  margin: 0;
+}
+
+button {
+  cursor: pointer;
+}
+
+ol {
+  list-style-type: decimal;
+  padding-left: 1.25rem;
+}
+
+.tsel-font {
+  font-family: "Telkomsel Batik Sans";
+}
+
+.poppins-font {
+  font-family: "Poppins";
+}
+
+.hidden-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.hidden-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.custom-gradient-claim {
+  background: linear-gradient(
+    239.71deg,
+    #fa7c55 14.07%,
+    #f75a49 24.97%,
+    #f22136 44.84%,
+    #f00b2e 54.41%,
+    #c3001c 83.4%
+  );
+}
+
+@layer components {
+  /* Text styles as used across insurtech-webapp */
+  .text-title {
+    @apply text-[16px] font-[600] text-ink;
+  }
+  .text-subtitle {
+    @apply text-[14px] font-[600] text-ink;
+  }
+  .text-body {
+    @apply text-[14px] font-[400] text-muted;
+  }
+  .text-caption {
+    @apply text-[12px] font-[400] text-muted;
+  }
+  .text-tiny {
+    @apply text-[10px] font-[400] text-muted;
+  }
+
+  .skeleton {
+    @apply bg-skeleton animate-pulse rounded-[8px];
+  }
+
+  .btn {
+    @apply flex flex-row items-center justify-center gap-[12px] w-full px-[16px] py-[12px] text-[16px] font-[600] rounded-full disabled:opacity-40;
+  }
+  .btn-sm {
+    @apply text-[12px];
+  }
+  .btn-primary {
+    @apply bg-primary text-white;
+  }
+  .btn-outline {
+    @apply border-[2px] border-primary text-primary;
+  }
+
+  .card {
+    @apply bg-white border-[1.5px] border-line rounded-[12px] p-[16px];
+  }
+}
