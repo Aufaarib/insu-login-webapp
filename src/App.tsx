@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import MainLayout from "./layouts/MainLayout";
 import heroImg from "./assets/main-banner.png";
+import desktopBannerImg from "./assets/banner-desktop.webp";
 import BottomSheet from "./components/ui/BottomSheet";
 import { SheetHeader, RadioCard, OtpInputGroup } from "./components/ui/OtpComponents";
 import {
@@ -254,9 +255,13 @@ function App() {
 
   return (
     <MainLayout>
-      <div className="flex flex-col h-full min-h-0 relative">
-        <img src={heroImg} alt="Insurance illustration" className="w-full shrink-0" />
-        <div className="bg-white flex flex-col flex-1 px-[22px] pt-[24px] pb-[32px] gap-[16px] min-h-0">
+      <div className="flex flex-col h-full min-h-0 relative tab:h-auto tab:items-center tab:px-[24px] tab:py-[24px] tab:gap-[24px] lg:px-[40px] lg:gap-[40px]">
+        {/* Tablet (tab, 768px+): full banner image, rounded. Desktop (lg, 1024px+): wide banner */}
+        <picture className="shrink-0 w-full tab:rounded-[16px] tab:overflow-hidden lg:max-w-[1148px]">
+          <source media="(min-width: 1024px)" srcSet={desktopBannerImg} />
+          <img src={heroImg} alt="Insurance illustration" className="block w-full" />
+        </picture>
+        <div className="bg-white flex flex-col flex-1 px-[22px] pt-[24px] pb-[32px] gap-[16px] min-h-0 tab:flex-none tab:w-full tab:rounded-[16px] tab:px-[32px] tab:py-[32px] tab:gap-[20px] lg:w-[575px] lg:px-[38px] lg:py-[40px]">
           <p className="text-ink text-[16px] font-[600] leading-[24px]">
             Login untuk mengakses Insurance Hub
           </p>
@@ -438,7 +443,7 @@ function App() {
               <button
                 onClick={handleVerify}
                 disabled={otp.some((d) => d === "") || verifying || wrongLimitReached}
-                className="btn btn-primary h-[48px] text-[16px] font-[600] disabled:opacity-100 disabled:bg-line disabled:text-subtle"
+                className="btn btn-primary h-[48px] text-[16px] font-[600] disabled:opacity-100 disabled:bg-line disabled:text-subtle tab:w-[330px] tab:self-center"
               >
                 {verifying ? "Memverifikasi..." : "Verifikasi"}
               </button>

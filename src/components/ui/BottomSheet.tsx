@@ -43,8 +43,9 @@ const BottomSheet = ({ open, onClose, children }: BottomSheetProps) => {
 
   return (
     <>
+      {/* Tablet and desktop (tab): shown as a centered popup instead of a bottom sheet */}
       {/* Clicks on the backdrop are ignored, so the sheet only closes from inside it */}
-      <div className="absolute inset-0 w-full bg-black/60 z-40"></div>
+      <div className="absolute tab:fixed inset-0 w-full bg-black/60 z-40"></div>
       <div
         ref={sheetRef}
         role="dialog"
@@ -53,7 +54,7 @@ const BottomSheet = ({ open, onClose, children }: BottomSheetProps) => {
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
         style={{ transform: `translateY(${dragY}px)` }}
-        className={`absolute bottom-0 left-0 right-0 bg-white rounded-t-[16px] z-50 flex flex-col px-[20px] pt-[16px] pb-[24px] gap-[16px] max-h-[90%] overflow-auto ${
+        className={`absolute bottom-0 left-0 right-0 bg-white rounded-t-[16px] z-50 flex flex-col px-[20px] pt-[16px] pb-[24px] gap-[16px] max-h-[90%] overflow-auto tab:fixed tab:inset-0 tab:m-auto tab:h-fit tab:w-[575px] tab:rounded-[16px] tab:px-[40px] tab:py-[36px] ${
           dragY === 0 ? 'transition-transform duration-200' : ''
         }`}
       >

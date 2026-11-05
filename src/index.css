@@ -3,6 +3,8 @@
 /* Same breakpoint as insurtech-webapp: md = phone frame width */
 @theme {
   --breakpoint-md: 412px;
+  /* Tablet and up: wide banner + centered card instead of the phone frame */
+  --breakpoint-tab: 768px;
 
   --font-poppins: "Poppins", sans-serif;
   --font-tsel: "Telkomsel Batik Sans", sans-serif;
